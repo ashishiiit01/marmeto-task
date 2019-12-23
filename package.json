@@ -1,0 +1,21 @@
+{
+  "name": "dev-contract-terminator",
+  "version": "1.0.0",
+  "description": "Contract terminator - website chatbot",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Xelp assignment",
+  "license": "ISC",
+  "dependencies": {
+    "config": "^3.0.1",
+    "cors": "^2.8.5",
+    "express": "^4.16.4",
+    "mongoose": "5.4.3"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.2",
+    "standard": "12.0.1"
+  }
+}
