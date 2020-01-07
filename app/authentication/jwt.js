@@ -22,14 +22,14 @@ async function createToken(payload) {
 }
 
 // verify if jwt token is valid or not
-async function verifyToken(token, expiration=false) {
+async function verifyToken(token, expiration = false) {
     if (!token) {
-        const error = 'Token should not be empty'      
+        const error = 'Token should not be empty'
     }
     return new Promise((resolve, reject) => {
-       
-        jwt.verify(token, jwtSecret, {ignoreExpiration: expiration}, (error, decodedToken) => {
-            if (error) {               
+        jwt.verify(token, jwtSecret, { ignoreExpiration: expiration }, (error, decodedToken) => {
+            if (error) {
+                console.log("error in verifyToken", error)
                 reject(error);
             } else {
                 resolve(decodedToken);
