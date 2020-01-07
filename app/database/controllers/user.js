@@ -17,7 +17,7 @@ function createUserData(data) {
 function getUserData(query = {}) {
     return new Promise(async (resolve, reject) => {
         try {
-            const users = await User.find(query)
+            const users = await User.find(query).lean()
             resolve(users);
         } catch (err) {
             reject(err);
@@ -37,17 +37,7 @@ function getUserDataBId(userId) {
 }
 
 
-//
-function deleteUserData(query) {
-    return new Promise(async (resolve, reject) => {
-        try {
-            const users = await User.deleteOne(query)
-            resolve(users);
-        } catch (err) {
-            reject(err);
-        }
-    });
-}
+
 
 function updateUserData(data, query = {}) {
     return new Promise(async (resolve, reject) => {
@@ -62,7 +52,6 @@ function updateUserData(data, query = {}) {
 module.exports = {
     createUserData,
     getUserData,
-    deleteUserData,
     updateUserData,
     getUserDataBId
 };

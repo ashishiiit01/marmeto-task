@@ -2,12 +2,12 @@
 
 const Router = require("express").Router();
 const UserCtrl = require('../app/database/controllers/user');
+const Jwt = require('../app/authentication/jwt')
 
 Router.route('/')
  .get(async function(req, res) {
         try {
 
-            
             res.json("server is ruuning successfully");
 
         } catch (err) {
@@ -23,7 +23,8 @@ Router.route('/user/:id')
         try {
 
             let response = await UserCtrl.getUserDataBId(req.params.id);
-            res.json(response);
+            res.status(200).json(response)
+            
 
         } catch (err) {
             console.log("Error in /user post", err)
@@ -34,12 +35,12 @@ Router.route('/user/:id')
 
     .put(async function(req, res) {
         try {
-            console.log("put called", req.params.id, "query", req.body)
             let query = {};
             if (req.body)
                 query = req.body
             let response = await UserCtrl.updateUserData({ "_id": req.params.id }, query);
-            res.json(response);
+            res.status(200).json(response)
+            
 
         } catch (err) {
             console.log("Error in /user post", err)
@@ -48,47 +49,65 @@ Router.route('/user/:id')
         }
     })
 
-    .delete(async function(req, res) {
-        try {
-            console.log("req.params.id", req.params)
-            let response = await UserCtrl.deleteUserData({ "_id": req.params.id });
-            res.json(response);
-
-        } catch (err) {
-            console.log("Error in /user post", err)
-            res.status(400).json({ "message": "Problem in deleting user." })
-
-        }
-    })
+   
 
 
 
 
-Router.route('/user')
+Router.route('/register')
     .post(async function(req, res) {
         try {
             console.log("body", req.body)
-            let response = await UserCtrl.createUserData(req.body);
-            res.json(response);
+             var data ={
+                "email":req.body.email.toLowerCase()
+            }
+
+            let user = await UserCtrl.getUserData(data);
+
+            if(user.length>0){
+                res.json("email already exists");
+
+            } else{
+                let response = await UserCtrl.createUserData(req.body);
+                res.status(200).json(response)
+
+            }
 
         } catch (err) {
-            console.log("Error in /user post", err)
+            console.log("Error in /register post", err)
             res.status(400).json({ "message": "Problem in creating user or the email/username already exists." })
 
         }
     })
 
-    .get(async function(req, res) {
+   
+
+
+
+Router.route('/login')
+    .post(async function(req, res) {
         try {
-            let query = {};
-            if (req.params)
-                query = req.query
-            let response = await UserCtrl.getUserData(query);
-            res.json(response);
+            console.log("body", req.body)
+            var data ={
+                "email":req.body.email.toLowerCase(),
+                "password":req.body.password
+            }
+
+            let response = await UserCtrl.getUserData(data);
+            console.log("response",response)
+             let payload = {
+                token: response._id
+            }
+            let token = await Jwt.createToken(payload);
+            console.log("token",token)
+
+            response[0]["token"] = token;
+            res.status(200).json(response)
+            
 
         } catch (err) {
-            console.log("Error in /user post", err)
-            res.status(400).json({ "message": "Problem in fetching user Details." })
+            console.log("Error in /login post", err)
+            res.status(400).json({ "message": "Problem in Login." })
 
         }
     })
